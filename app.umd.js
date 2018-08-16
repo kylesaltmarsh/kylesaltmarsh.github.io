@@ -1,75 +1,56 @@
 'use strict';
 
-/* eslint-disable no-unused-vars */
-
-//region Data
-
-var resources = [{ id: 'r1', name: 'Mike' }, { id: 'r2', name: 'Linda' }, { id: 'r3', name: 'Don' }, { id: 'r4', name: 'Karen' }, { id: 'r5', name: 'Doug' }, { id: 'r6', name: 'Peter' }, { id: 'r7', name: 'Sam' }, { id: 'r8', name: 'Melissa' }, { id: 'r9', name: 'John' }, { id: 'r10', name: 'Ellen' }],
-    events = [{
-    resourceId: 'r1',
-    startDate: new Date(2017, 0, 1, 10),
-    endDate: new Date(2017, 0, 1, 12),
-    name: 'Click me',
-    iconCls: 'fa fa-mouse-pointer'
-}, {
-    resourceId: 'r2',
-    startDate: new Date(2017, 0, 1, 12),
-    endDate: new Date(2017, 0, 1, 13, 30),
-    name: 'Drag me',
-    iconCls: 'fa fa-arrows'
-}, {
-    resourceId: 'r3',
-    startDate: new Date(2017, 0, 1, 14),
-    endDate: new Date(2017, 0, 1, 16),
-    name: 'Double click me',
-    eventColor: 'purple',
-    iconCls: 'fa fa-mouse-pointer'
-}, {
-    resourceId: 'r4',
-    startDate: new Date(2017, 0, 1, 8),
-    endDate: new Date(2017, 0, 1, 11),
-    name: 'Right click me',
-    iconCls: 'fa fa-mouse-pointer'
-}, {
-    resourceId: 'r5',
-    startDate: new Date(2017, 0, 1, 15),
-    endDate: new Date(2017, 0, 1, 17),
-    name: 'Resize me',
-    iconCls: 'fa fa-arrows-alt-h'
-}, {
-    resourceId: 'r6',
-    startDate: new Date(2017, 0, 1, 16),
-    endDate: new Date(2017, 0, 1, 19),
-    name: 'Important meeting',
-    iconCls: 'fa fa-exclamation-triangle',
-    eventColor: 'red'
-}, {
-    resourceId: 'r6',
-    startDate: new Date(2017, 0, 1, 6),
-    endDate: new Date(2017, 0, 1, 8),
-    name: 'Sports event',
-    iconCls: 'fa fa-basketball-ball'
-}, {
-    resourceId: 'r7',
-    startDate: new Date(2017, 0, 1, 9),
-    endDate: new Date(2017, 0, 1, 11),
-    name: 'Dad\'s birthday',
-    iconCls: 'fa fa-birthday-cake'
-}];
-
-//endregion
-
+// eslint-disable-next-line no-unused-vars
 var scheduler = new bryntum.scheduler.Scheduler({
+
     appendTo: 'container',
     minHeight: '20em',
-    resources: resources,
-    events: events,
-    startDate: new Date(2017, 0, 1, 6),
-    endDate: new Date(2017, 0, 1, 20),
-    viewPreset: 'hourAndDay',
-    rowHeight: 50,
-    barMargin: 5,
-    multiEventSelect: true,
 
-    columns: [{ text: 'Name', field: 'name', width: 130 }]
+    features: {
+        eventDragCreate: false,
+        eventResize: false,
+        eventTooltip: false,
+        eventDrag: {
+            constrainDragToResource: true
+        }
+    },
+
+    columns: [{
+        type: 'resourceInfo',
+        imagePath: '../_shared/images/users/',
+        text: 'Staff',
+        field: 'name',
+        width: '13em',
+        showEventCount: false,
+        showRole: true
+    }],
+
+    rowHeight: 65,
+    startDate: new Date(2017, 5, 1),
+    endDate: new Date(2017, 5, 11),
+    viewPreset: 'dayAndWeek',
+    eventLayout: 'none',
+    managedEventSizing: false,
+
+    crudManager: {
+        autoLoad: true,
+        transport: {
+            load: {
+                url: 'data/data.json'
+            }
+        }
+    },
+
+    eventRenderer: function eventRenderer(_ref) {
+        var eventRecord = _ref.eventRecord,
+            resourceRecord = _ref.resourceRecord,
+            tplData = _ref.tplData;
+
+        // Add a custom CSS classes to the template element data by setting a property name
+        tplData.cls.milestone = eventRecord.isMilestone;
+        tplData.cls.normalEvent = !eventRecord.isMilestone;
+        tplData.cls[resourceRecord.id] = 1;
+
+        return eventRecord.title;
+    }
 });
