@@ -17,7 +17,7 @@ var scheduler = new bryntum.scheduler.Scheduler({
 
     columns: [{
         type: 'resourceInfo',
-        imagePath: '../_shared/images/users/',
+        imagePath: 'Examples/_shared/images/users/',
         text: 'Staff',
         field: 'name',
         width: '13em',
